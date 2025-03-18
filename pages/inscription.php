@@ -4,35 +4,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <title>Inscription</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="../scripts/app.js"></script>
 </head>
 
-<body class="bg-gradient-to-r from-indigo-300 to-blue-500 flex items-center justify-center h-screen">
+<body class="bg-gradient-to-r from-blue-300 to-indigo-500 flex items-center justify-center h-screen">
 
-    <form action="../config/database.php" method="POST" class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md space-y-6">
+<?php
+    require_once("../config/database.php");
+?>
 
-        <h2 class="text-3xl font-semibold text-center text-blue-700">Créer un compte</h2>
+    <form method="POST" action="inscription.php" class="max-w-sm mx-auto bg-white p-8 rounded-lg shadow-lg space-y-6">
+        <div>
+            <h1 class="text-2xl font-semibold text-center text-blue-700">Créez votre compte</h1>
+        </div>
 
-        <input type="text" name="pseudo" placeholder="Pseudo" required
-            class="w-full border border-gray-300 p-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        <div>
+            <label for="pseudo" class="block text-sm font-medium text-gray-700">Votre Pseudo</label>
+            <input type="text" id="pseudo" name="pseudo" placeholder="Entrez votre pseudo..." required
+                class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        </div>
 
-        <input type="text" name="nom" placeholder="Nom" required
-            class="w-full border border-gray-300 p-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        <div>
+            <label for="nom" class="block text-sm font-medium text-gray-700">Votre Nom</label>
+            <input type="text" id="nom" name="nom" placeholder="Entrez votre nom..." required
+                class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        </div>
 
-        <input type="text" name="prenom" placeholder="Prénom" required
-            class="w-full border border-gray-300 p-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-            
-        <input type="email" name="email" placeholder="Email" required
-            class="w-full border border-gray-300 p-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        <div>
+            <label for="prenom" class="block text-sm font-medium text-gray-700">Votre Prénom</label>
+            <input type="text" id="prenom" name="prenom" placeholder="Entrez votre prénom..." required
+                class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        </div>
 
-        <input type="password" name="password" placeholder="Mot de passe" required
-            class="w-full border border-gray-300 p-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Votre Email</label>
+            <input type="email" id="email" name="email" placeholder="Entrez votre email..." required
+                class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        </div>
 
-        <button type="submit" name="ok"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg shadow-md transition duration-200">S'inscrire</button>
-        <p class="text-center text-sm pt-4">Déjà un compte ? <a href="../pages/login.php" class="text-violet-500 hover:text-blue-600">Connectez-vous ici</a></p>
+        <div>
+            <label for="password" class="block text-sm font-medium text-gray-700">Votre Mot de Passe</label>
+            <input type="password" id="password" name="password" placeholder="Entrez votre mot de passe..." required
+                class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+
+        <div>
+            <input type="submit" value="S'inscrire" name="inscription"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg shadow-md transition duration-200">
+        </div>
+
+        <p class="text-center text-sm pt-4">Vous avez déjà un compte ? <a href="../pages/login.php"
+                class="text-violet-500 hover:text-blue-600">Connectez-vous ici</a></p>
+
+        <?php
+        // Afficher les messages d'erreur, si existants
+        if (isset($_SESSION['error_message'])) {
+            echo "<p class='text-red-500 text-center'>" . $_SESSION['error_message'] . "</p>";
+            unset($_SESSION['error_message']);
+        }
+        ?>
     </form>
 
 </body>

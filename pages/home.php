@@ -8,36 +8,28 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOOKS API</title>
+    <title>BOOK'ING API</title>
     <script defer src="../scripts/app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 </head>
 
-<body class="bg-gradient-to-r from-blue-300 to-indigo-500 p-6 max-w-100vw h-100-vh bg-fixed">
+<body class="bg-[#fdf6ec] min-h-screen flex flex-col items-center p-6">
 
     <?php include '../component/header.php'; ?>
 
-    <?php if (isset($_SESSION['user_id'])): ?>
-        <div class="flex justify-center mt-12">
-            <div class="bg-white p-6 rounded-lg shadow-lg flex items-center">
-                <img src="../assets/Villageoise.webp" alt="" class="w-12 h-24" />
-                <p class="text-2xl text-gray-800 ml-4">
-                    Heureux de vous revoir, <span
-                        class="text-blue-500 font-semibold"><?php echo htmlspecialchars($_SESSION['pseudo']); ?></span> !
-                </p>
-            </div>
-        </div>
-    <?php endif; ?>
+    <div class="mt-12 bg-white p-8 rounded-lg shadow-lg w-full max-w-3xl text-center">
+        <h1 class="text-2xl font-bold text-[#9b4d1f]">Recherche de Livres</h1>
 
-    <div class="mt-12 flex justify-center">
-        <div class="relative flex items-center space-x-2">
+        <div class="mt-4 flex items-center justify-center space-x-2">
             <?php if (isset($_SESSION['user_id'])): ?>
-                <input type="text" class="search border p-3 rounded-lg w-80 shadow-md bg-white"
-                    placeholder="Rechercher par titre, auteur, sujet..." />
-                <button
-                    class="searchBtn px-4 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition cursor-pointer">
-                    <i class="fas fa-search"></i> Rechercher
+                <div class="relative w-full max-w-xl">
+                    <input type="text" class="search w-full border p-3 rounded-lg shadow-md bg-white pl-10"
+                        placeholder="Rechercher un livre par titre..." />
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+                <button class="searchBtn px-6 py-3 bg-[#d97941] text-white rounded-lg hover:bg-[#b55f30] transition">
+                    Rechercher
                 </button>
             <?php else: ?>
                 <p class="text-white bg-red-500 px-4 py-2 rounded-lg shadow-md">
@@ -47,11 +39,12 @@ session_start();
         </div>
     </div>
 
-    <div class="flex flex-col items-center mt-6">
+    <div class="flex flex-col items-center mt-6 w-full">
         <div class="filters-menu mb-4"></div>
-        <div class="resultats grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl">
+        <div class="resultats grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl p-4">
         </div>
     </div>
+
 
 </body>
 

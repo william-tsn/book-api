@@ -4,16 +4,18 @@ session_start();
 $servername = "localhost";
 $username = "root";
 $password = "";
+$database = "book";
+
 
 // Connection à la base de données
 try {
-    $bdd = new PDO("mysql:host=$servername;dbname=bibliothèque;charset=utf8", $username, $password);
+    $bdd = new PDO("mysql:host=$servername;dbname=$database;charset=utf8", $username, $password);
     $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     echo "Erreur :" . $e->getMessage();
 }
 
-// Gérer l'inscription
+// Traitement de l'inscription
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['inscription'])) {
     $nom = $_POST['nom'];
     $pseudo = $_POST['pseudo'];
@@ -21,46 +23,61 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['inscription'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Validation des champs avec les contraintes (Pseudo, Nom, Prénom, Email, Mot de passe)
+    // Validation des champs
     if (strlen($pseudo) < 4 || strlen($pseudo) > 24 || preg_match('/[^a-zA-Z0-9_]/', $pseudo)) {
-        echo json_encode(["success" => false, "message" => "Pseudo invalide"]);
+        $_SESSION['error_message'] = "Pseudo invalide. Il doit être entre 4 et 24 caractères, et ne contenir que des lettres, chiffres et underscores.";
+        header("Location: inscription.php");
         exit;
     }
 
     if (strlen($nom) < 2 || strlen($nom) > 50 || preg_match('/[^a-zA-ZÀ-ÿ -]/', $nom)) {
-        echo json_encode(["success" => false, "message" => "Nom invalide"]);
+        $_SESSION['error_message'] = "Nom invalide. Il doit être entre 2 et 50 caractères.";
+        header("Location: inscription.php");
         exit;
     }
 
     if (strlen($prenom) < 2 || strlen($prenom) > 50 || preg_match('/[^a-zA-ZÀ-ÿ -]/', $prenom)) {
-        echo json_encode(["success" => false, "message" => "Prénom invalide"]);
+        $_SESSION['error_message'] = "Prénom invalide. Il doit être entre 2 et 50 caractères.";
+        header("Location: inscription.php");
         exit;
     }
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echo json_encode(["success" => false, "message" => "Email invalide"]);
+        $_SESSION['error_message'] = "Email invalide.";
+        header("Location: inscription.php");
         exit;
     }
 
     if (!preg_match('/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^a-zA-Z0-9_]).{8,}$/', $password)) {
-        echo json_encode(["success" => false, "message" => "Mot de passe invalide"]);
+        $_SESSION['error_message'] = "Mot de passe invalide. Il doit contenir au moins une majuscule, une minuscule, un chiffre, et un caractère spécial, et être d'au moins 8 caractères.";
+        header("Location: inscription.php");
         exit;
     }
 
+    // Hashage du mot de passe
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
     // Insertion de l'utilisateur dans la base de données
-    $requete = $bdd->prepare("INSERT INTO users (pseudo, nom, prenom, email, password) VALUES (:pseudo, :nom, :prenom, :email, :password)");
-    $requete->execute([
-        "pseudo" => $pseudo,
-        "nom" => $nom,
-        "prenom" => $prenom,
-        "email" => $email,
-        "password" => $passwordHash
-    ]);
-
-    header("Location: ../pages/login.php");
-    exit();
+    try {
+        $requete = $bdd->prepare("INSERT INTO users (pseudo, nom, prenom, email, password) VALUES (:pseudo, :nom, :prenom, :email, :password)");
+        $requete->execute([
+            "pseudo" => $pseudo,
+            "nom" => $nom,
+            "prenom" => $prenom,
+            "email" => $email,
+            "password" => $passwordHash
+        ]);
+        
+        // Redirection vers la page de connexion après inscription réussie
+        $_SESSION['success_message'] = "Inscription réussie ! Vous pouvez maintenant vous connecter.";
+        header("Location: ../pages/login.php");
+        exit();
+    } catch (PDOException $e) {
+        // Si erreur lors de l'insertion dans la base de données
+        $_SESSION['error_message'] = "Erreur lors de l'inscription. Veuillez réessayer.";
+        header("Location: inscription.php");
+        exit();
+    }
 }
 
 // La je gère la connexion
@@ -88,7 +105,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
             header("Location: ../pages/home.php");
             exit();
         } else {
-            echo json_encode(["success" => false, "message" => "Email ou mot de passe incorrect"]);
+            $_SESSION['error_message'] = "Email ou mot de passe incorrect";
+            header("Location: login.php");
+            exit();
+
         }
     }
 }

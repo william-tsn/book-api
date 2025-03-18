@@ -35,8 +35,9 @@
         <p class="text-center text-sm pt-4">Vous n'avez pas de compte ? <a href="../pages/inscription.php"
                 class="text-violet-500 hover:text-blue-600">Créez-en un ici</a></p>
         <?php
-        if (!empty($error_msg)) {
-            echo "<p class='text-red-500 text-center'>$error_msg</p>";
+        if (isset($_SESSION['error_message'])) {
+            echo "<p class='text-red-500 text-center'>" . $_SESSION['error_message'] . "</p>";
+            unset($_SESSION['error_message']);
         }
         ?>
     </form>
