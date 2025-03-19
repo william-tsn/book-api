@@ -19,9 +19,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['book_id']) && isset($_
     }
 
     $book_id = $_POST['book_id'];
-    $title = $_POST['title'];
-    $author = $_POST['author'];
-    $image_url = $_POST['image_url'];
+    $title = $_POST['title'] ?: "Titre non disponible";
+    $author = $_POST['author'] ?: "Auteur non disponible";
+    $image_url = $_POST['image_url'] ?: "../assets/imagenotfound.jpg";
 
     // ici je vérifie si le livre est déjà dans les favoris
     $stmt = $bdd->prepare("SELECT * FROM favoris WHERE user_id = ? AND book_id = ?");
