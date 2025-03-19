@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['inscription'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Validation des champs
+    // Ici les contraintes
     if (strlen($pseudo) < 4 || strlen($pseudo) > 24 || preg_match('/[^a-zA-Z0-9_]/', $pseudo)) {
         $_SESSION['error_message'] = "Pseudo invalide. Il doit être entre 4 et 24 caractères, et ne contenir que des lettres, chiffres et underscores.";
         header("Location: inscription.php");
@@ -54,10 +54,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['inscription'])) {
         exit;
     }
 
-    // Hashage du mot de passe
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-    // Insertion de l'utilisateur dans la base de données
+    // j'insère l'utilisateur dans la base de données
     try {
         $requete = $bdd->prepare("INSERT INTO users (pseudo, nom, prenom, email, password) VALUES (:pseudo, :nom, :prenom, :email, :password)");
         $requete->execute([
@@ -68,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['inscription'])) {
             "password" => $passwordHash
         ]);
         
-        // Redirection vers la page de connexion après inscription réussie
+        // je redirige vers la page de connexion après inscription réussie
         $_SESSION['success_message'] = "Inscription réussie ! Vous pouvez maintenant vous connecter.";
         header("Location: ../pages/login.php");
         exit();
@@ -86,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
     $password = $_POST['password'];
 
     if ($email != "" && $password != "") {
-        // Vérification de l'existence de l'email dans la base de données
+        // je vérifie l'existence de l'email dans la base de données
         $req = $bdd->prepare("SELECT * FROM users WHERE email = ?");
         $req->execute([$email]);
         $rep = $req->fetch(PDO::FETCH_ASSOC);
@@ -96,7 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
             $_SESSION['user_id'] = $rep['id'];
             $_SESSION['pseudo'] = $rep['pseudo'];
 
-            // Récupération de la photo de profil de l'utilisateur
+            // Je récupère la photo de profil de l'utilisateur
             $stmt = $bdd->prepare("SELECT photo_de_profil FROM users WHERE id = ?");
             $stmt->execute([$_SESSION['user_id']]);
             $userData = $stmt->fetch(PDO::FETCH_ASSOC);
