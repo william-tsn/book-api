@@ -1,1 +1,0 @@
-La page principale se trouve dans : book-api/pages/home.php  (je n'ai pas fait de index.php car j'avais un petit problème)
